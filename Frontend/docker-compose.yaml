@@ -1,0 +1,35 @@
+services:
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+    ports:
+      - "8085:8085"
+    environment:
+      - PUBSUB_PROJECT_ID=local-test-project
+
+  firestore-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: gcloud beta emulators firestore start --host-port=0.0.0.0:8086
+    ports:
+      - "8086:8086"
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8086
+      - GCP_PROJECT_ID=local-test-project
+      - FIREBASE_API_KEY=test-key
+      - FIREBASE_APP_ID=test-app-id
+      - FIREBASE_AUTH_DOMAIN=local-test-project.firebaseapp.com
+      - CONTEXT_REQUEST_TOPIC=ContextRequest
+      - CHAT_REQUEST_TOPIC=ChatRequest
+      - CHAINLIT_AUTH_SECRET=dev-secret-key-change-in-production-f8a3b2c1d4e5f6g7h8i9j0k1l2m3n4o5
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - pubsub-emulator
+      - firestore-emulator
+    volumes:
+      - ./app:/app
