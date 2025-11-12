@@ -4,8 +4,6 @@ FROM python:3.13-alpine
 # Set working directory
 WORKDIR /app
 
-
-
 # Copy dependency files
 COPY app/pyproject.toml app/uv.lock* ./
 

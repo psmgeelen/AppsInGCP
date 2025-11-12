@@ -31,5 +31,3 @@ services:
     depends_on:
       - pubsub-emulator
       - firestore-emulator
-    volumes:
-      - ./app:/app

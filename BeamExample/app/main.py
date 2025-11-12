@@ -68,47 +68,23 @@ def run_pipeline(argv=None):
     pipeline_options = PipelineOptions(pipeline_args)
 
     with beam.Pipeline(options=pipeline_options) as pipeline:
-        # Read from Pub/Sub subscription
-        events = (
+        # Single pipeline chain
+        result = (
                 pipeline
-                | 'Read from Pub/Sub' >> beam.io.ReadFromPubSub(
-            subscription=known_args.input_subscription
-        )
-        )
-
-        # Parse messages
-        parsed_events = (
-                events
+                | 'Read from Pub/Sub' >> beam.io.ReadFromPubSub(subscription=known_args.input_subscription)
                 | 'Parse Messages' >> beam.ParDo(ParsePubSubMessage())
-        )
-
-        # Apply windowing for aggregation
-        windowed_events = (
-                parsed_events
-                | 'Apply Window' >> beam.WindowInto(
-            beam.window.FixedWindows(known_args.window_size)
-        )
-        )
-
-        # Group by key and count
-        aggregated = (
-                windowed_events
+                | 'Apply Window' >> beam.WindowInto(beam.window.FixedWindows(known_args.window_size))
                 | 'Group and Count' >> beam.CombinePerKey(sum)
-        )
-
-        # Format output
-        formatted_output = (
-                aggregated
                 | 'Format Output' >> beam.ParDo(FormatOutput())
         )
 
         # Write to Pub/Sub topic (if specified) or print to console
         if known_args.output_topic:
-            formatted_output | 'Write to Pub/Sub' >> beam.io.WriteToPubSub(
+            result | 'Write to Pub/Sub' >> beam.io.WriteToPubSub(
                 topic=known_args.output_topic
             )
         else:
-            formatted_output | 'Print Results' >> beam.Map(print)
+            result | 'Print Results' >> beam.Map(print)
 
 
 if __name__ == '__main__':

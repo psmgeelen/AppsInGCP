@@ -4,4 +4,8 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "apache-beam[dataframe,gcp,interactive]>=2.69.0",
+    "graphviz>=0.21",
+    "jupyter>=1.1.1",
+]
