@@ -18,8 +18,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
-      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8086
       - GCP_PROJECT_ID=local-test-project
       - FIREBASE_API_KEY=test-key
       - FIREBASE_APP_ID=test-app-id
