@@ -17,7 +17,7 @@ cp main.py "$TMP_DIR/"
 
 # Export dependencies from uv environment
 echo "📦 Exporting requirements..."
-uv export requirements > "$TMP_DIR/requirements.txt"
+uv export > "$TMP_DIR/requirements.txt"
 
 # Optional: copy any other needed files (e.g., helper modules)
 # cp -r my_module "$TMP_DIR/"
